@@ -1,50 +1,141 @@
-# Welcome to your Expo app 👋
+# PharmaGo
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native app for pharmacy management and delivery services.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Multi-role Authentication**: Admin, Pharmacy, Delivery, and Customer roles
+- **Password Management**: First-time password change for new users
+- **Real-time Updates**: Live order tracking and status updates
+- **Modern UI**: Clean and intuitive user interface
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+- Expo CLI
+- Supabase account
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd pharmago
+   ```
+
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-2. Start the app
-
-   ```bash
-   npx expo start
+3. **Set up environment variables**
+   
+   Create a `.env` file in the root directory:
+   ```env
+   SUPABASE_URL=your-supabase-project-url
+   SUPABASE_ANON_KEY=your-supabase-anon-key
    ```
 
-In the output, you'll find options to open the app in a
+4. **Set up Supabase Database**
+   
+   - Create a new Supabase project at [https://app.supabase.com/](https://app.supabase.com/)
+   - Get your project URL and anon key from Project Settings > API
+   - Create the following tables in your Supabase database:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   **Users Table:**
+   ```sql
+   CREATE TABLE users (
+     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+     username VARCHAR(255) UNIQUE NOT NULL,
+     email VARCHAR(255),
+     password_hash VARCHAR(255) NOT NULL,
+     role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'pharmacy', 'delivery', 'customer')),
+     must_change_password BOOLEAN DEFAULT true,
+     is_active BOOLEAN DEFAULT true,
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+   );
+   ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   **Pharmacies Table:**
+   ```sql
+   CREATE TABLE pharmacies (
+     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+     user_id UUID REFERENCES users(id),
+     name VARCHAR(255) NOT NULL,
+     address TEXT NOT NULL,
+     phone VARCHAR(50) NOT NULL,
+     logo_url TEXT,
+     latitude DECIMAL(10, 8),
+     longitude DECIMAL(11, 8),
+     is_active BOOLEAN DEFAULT true,
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+   );
+   ```
 
-## Get a fresh project
+5. **Seed the admin user**
+   
+   Insert a default admin user:
+   ```sql
+   INSERT INTO users (username, password_hash, role, must_change_password, is_active)
+   VALUES ('admin', 'admin123', 'admin', true, true);
+   ```
 
-When you're ready, run:
+6. **Start the development server**
+   ```bash
+   npm start
+   ```
 
-```bash
-npm run reset-project
+## Project Structure
+
+```
+pharmago/
+├── app/                    # Expo Router pages
+│   ├── (auth)/            # Authentication screens
+│   ├── (tabs)/            # Main app tabs
+│   └── _layout.tsx        # Root layout
+├── components/            # Reusable components
+├── services/             # API and external services
+├── store/                # Zustand state management
+├── constants/            # App constants
+└── assets/               # Images, fonts, etc.
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Authentication Flow
 
-## Learn more
+1. **Login**: Users enter username and password
+2. **Password Change**: New users must change their password on first login
+3. **Role-based Navigation**: Users are directed to appropriate dashboards based on their role
 
-To learn more about developing your project with Expo, look at the following resources:
+## Development
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Available Scripts
 
-## Join the community
+- `npm start` - Start the Expo development server
+- `npm run android` - Start on Android device/emulator
+- `npm run ios` - Start on iOS device/simulator
+- `npm run web` - Start on web browser
+- `npm run lint` - Run ESLint
 
-Join our community of developers creating universal apps.
+### Adding New Features
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+1. Create components in the `components/` directory
+2. Add services in the `services/` directory
+3. Update the store in `store/` for state management
+4. Add new pages in the appropriate `app/` subdirectory
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
