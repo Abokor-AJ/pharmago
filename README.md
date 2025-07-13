@@ -128,6 +128,56 @@ pharmago/
 3. Update the store in `store/` for state management
 4. Add new pages in the appropriate `app/` subdirectory
 
+## Task Master AI Integration
+
+This project includes Task Master AI for intelligent task management and project planning.
+
+### Setup Task Master AI
+
+1. **Run the setup script:**
+   ```bash
+   ./scripts/setup-taskmaster.sh
+   ```
+
+2. **Configure API keys:**
+   - Edit `.env` file with your API keys for CLI usage
+   - Edit `.cursor/mcp.json` with your API keys for IDE integration
+   - At least one API key is required (recommended: ANTHROPIC_API_KEY for Claude)
+
+3. **Initialize Task Master project:**
+   ```bash
+   task-master-ai init --name="PharmaGo" --description="Pharmacy management app"
+   ```
+
+4. **Set up AI models:**
+   ```bash
+   task-master-ai models --setup
+   ```
+
+5. **Generate tasks from build plan:**
+   ```bash
+   task-master-ai parse-prd --input=Docs/BUILD_PLAN.md
+   ```
+
+### Available API Providers
+
+- **ANTHROPIC_API_KEY** - Claude (recommended)
+- **OPENAI_API_KEY** - GPT-4
+- **PERPLEXITY_API_KEY** - Research capabilities
+- **GOOGLE_API_KEY** - Gemini
+- **MISTRAL_API_KEY** - Mistral models
+- **OPENROUTER_API_KEY** - Multiple models
+- **XAI_API_KEY** - xAI Grok
+- **AZURE_OPENAI_API_KEY** - Azure OpenAI
+
+### Task Master Commands
+
+- `task-master-ai list` - List all tasks
+- `task-master-ai next` - Show next task to work on
+- `task-master-ai show <id>` - Show detailed task info
+- `task-master-ai add-task --prompt="<description>"` - Add new task
+- `task-master-ai expand --id=<id>` - Break down task into subtasks
+
 ## Contributing
 
 1. Fork the repository
