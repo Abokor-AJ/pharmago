@@ -258,9 +258,9 @@
 - [ ] **Create Dashboard Structure**
   - File: `app/(tabs)/admin.tsx`
   - Header with admin info and logout
-  - Statistics cards (total users, pharmacies, orders)
+  - Statistics cards (total users, pharmacies, orders, **scans**)
   - Quick action buttons
-  - Recent activity section
+  - Recent activity section (**recent scans**)
 
 #### 3.2.2 Dashboard Components
 - [ ] **Statistics Cards**
@@ -268,6 +268,7 @@
   - Total delivery users count
   - Total customers count
   - Pending orders count
+  - **Total prescription scans count**
   - Real-time data from Supabase
 
 - [ ] **Quick Actions**
@@ -281,13 +282,33 @@
   - Recent orders
   - System notifications
   - Activity timestamps
+  - **Recent prescription scans**
+    - Show: customer name, phone, scan type, scan content, timestamp
 
-#### 3.2.3 Dashboard Navigation
-- [ ] **Tab Navigation**
-  - Dashboard (home)
-  - User Management
-  - Reports
-  - Settings
+- [ ] **Scan Data Integration**
+  - Create `prescription_scans` table in Supabase
+  - Record each scan event with customer info and scan details
+  - Fetch scan stats and recent scans for dashboard display
+
+---
+
+### 3.2.4 (NEW) Database & Service Integration for Scans
+
+- [ ] **Create Prescription Scans Table**
+  - File: `scripts/new-database-schema.sql`
+  - Add `prescription_scans` table with fields: id, customer_id, customer_name, customer_phone, scan_type, scan_content, created_at
+  - Add index on customer_id
+
+- [ ] **Update OCR Service**
+  - File: `services/ocr.ts`
+  - On successful scan, insert a record into `prescription_scans` with all relevant details
+
+- [ ] **Admin Dashboard Data Fetch**
+  - File: `app/(tabs)/admin.tsx`
+  - Fetch total scan count for statistics card
+  - Fetch recent scans for activity feed
+
+---
 
 ### 3.3 Pharmacy & Delivery User Management 🔄 READY TO START
 

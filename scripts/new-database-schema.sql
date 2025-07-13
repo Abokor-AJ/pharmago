@@ -139,3 +139,17 @@ UNION ALL
 SELECT 'Users:' as table_name, count(*) as count FROM users
 UNION ALL
 SELECT 'Pharmacies:' as table_name, count(*) as count FROM pharmacies;
+
+-- 15. Create prescription_scans table
+CREATE TABLE prescription_scans (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  customer_id UUID REFERENCES users(id),
+  customer_name VARCHAR(255) NOT NULL,
+  customer_phone VARCHAR(50) NOT NULL,
+  scan_type VARCHAR(50) NOT NULL, -- e.g., 'prescription', 'other'
+  scan_content TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 16. Index for fast lookup by customer
+CREATE INDEX idx_prescription_scans_customer_id ON prescription_scans(customer_id);
